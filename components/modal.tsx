@@ -21,7 +21,6 @@ export default function Modal() {
   const pathname = usePathname();
 
   useEffect(() => {
-    console.log(isValidModal);
     setIsValidModal(Boolean(contentOptions[modal]));
     if (isLoggedIn) {
       setIsValidModal(Boolean(loggedInContentOptions[modal]));

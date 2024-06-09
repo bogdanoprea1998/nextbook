@@ -1,4 +1,5 @@
 import { Schema, model, models } from "mongoose";
+import FeedModel from "./feedModel";
 
 const userSchema = new Schema(
   {
@@ -13,6 +14,11 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true,
+    },
+    feedId: {
+      type: Schema.Types.ObjectId,
+      ref: FeedModel.modelName,
+      required: false,
     },
   },
   { timestamps: true }

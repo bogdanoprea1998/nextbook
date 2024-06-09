@@ -34,3 +34,13 @@ export async function getUserFromDb(email: any, password: any) {
     throw new Error(error);
   }
 }
+
+export async function getUsername(email: any) {
+  try {
+    await connectDB();
+    const user = await UserModel.findOne({ email });
+    return user.username;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
