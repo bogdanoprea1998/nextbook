@@ -36,7 +36,7 @@ export default function Modal() {
       >
         <div
           id="modal_container"
-          className="flex flex-col m-5 bg-white p-5  rounded-xl md:mx-auto md:max-w-[50%]"
+          className="flex flex-col m-5 bg-white p-5  rounded-xl md:mx-auto md:max-w-[32rem]"
         >
           <Link onClick={handleClick} className="self-end" href={pathname}>
             <XCircleIcon className="w-8 text-black" />
