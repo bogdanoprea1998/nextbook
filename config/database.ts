@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 // mongoose.set("debug", true);
 
 const mongodbUri: any = process.env.MONGODB_URI;
-console.log(mongodbUri);
 
 const connectDB = async () => {
   if (mongoose.connections[0].readyState) {

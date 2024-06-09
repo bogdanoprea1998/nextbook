@@ -2,13 +2,29 @@
 
 import Link from "next/link";
 
-import login from "@/app/_actions/login";
+import { useRouter } from "next/navigation";
+
+import login from "@/app/_actions/userActions";
 import Input from "../input";
 
 export default function Login() {
+  const router = useRouter();
+
+  const loginUser = async (formData: any) => {
+    const formDataArr = [...formData];
+    const email = formDataArr[0][1];
+    const password = formDataArr[1][1];
+    const userData = { email, password };
+
+    await login(userData);
+
+    router.push("/");
+    router.refresh();
+  };
+
   return (
     <form
-      action={login}
+      action={loginUser}
       id="login_form"
       className="flex flex-col text-center my-7"
     >
