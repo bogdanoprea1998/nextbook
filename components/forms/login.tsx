@@ -39,7 +39,7 @@ export default function Login() {
         Log in
       </button>
       <p className="mt-5">
-        Don't have an account yet?
+        {"Don't have an account yet?"}
         <Link className="text-green-700 font-bold" href="?modal=register">
           {" "}
           Go to registration

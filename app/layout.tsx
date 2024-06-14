@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { SessionProvider } from "next-auth/react";
+import { Suspense } from "react";
 
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
@@ -25,7 +26,9 @@ export default async function RootLayout({
       <body className={inter.className}>
         <SessionProvider>
           <Header />
-          <Modal />
+          <Suspense>
+            <Modal />
+          </Suspense>
           {children}
           <Footer />
         </SessionProvider>

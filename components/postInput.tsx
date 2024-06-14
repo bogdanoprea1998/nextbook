@@ -18,7 +18,7 @@ export default function PostInput() {
     if (userEmail) {
       fetchUsername();
     }
-  }, [session]);
+  }, [session, userEmail]);
 
   const uploadImage = () => {
     if (imageUpload == null || !username) return;

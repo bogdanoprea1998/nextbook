@@ -20,28 +20,6 @@ export default function Modal() {
   const modal: any = searchParams.get("modal");
   const pathname = usePathname();
 
-  useEffect(() => {
-    setIsValidModal(Boolean(contentOptions[modal]));
-    if (isLoggedIn) {
-      setIsValidModal(Boolean(loggedInContentOptions[modal]));
-    }
-  }, [modal, isLoggedIn]);
-
-  useEffect(() => {
-    if (isValidModal) {
-      disableBodyScroll(ref);
-    }
-    if (modal && isValidModal === false) {
-      router.push("/");
-      enableBodyScroll(ref);
-    }
-  }, [isValidModal]);
-
-  const handleClick = () => {
-    setIsValidModal(false);
-    enableBodyScroll(ref);
-  };
-
   const contentOptions: any = {
     login: <Login />,
     register: <Register />,
@@ -51,6 +29,28 @@ export default function Modal() {
 
   const loggedInContentOptions: any = {
     test: <div>test loggedIn Only</div>,
+  };
+
+  useEffect(() => {
+    setIsValidModal(Boolean(contentOptions[modal]));
+    if (isLoggedIn) {
+      setIsValidModal(Boolean(loggedInContentOptions[modal]));
+    }
+  }, [modal, isLoggedIn, contentOptions, loggedInContentOptions]);
+
+  useEffect(() => {
+    if (isValidModal) {
+      disableBodyScroll(ref);
+    }
+    if (modal && isValidModal === false) {
+      router.push("/");
+      enableBodyScroll(ref);
+    }
+  }, [isValidModal, router]);
+
+  const handleClick = () => {
+    setIsValidModal(false);
+    enableBodyScroll(ref);
   };
 
   return (
