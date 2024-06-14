@@ -36,21 +36,22 @@ export default function Modal() {
     if (isLoggedIn) {
       setIsValidModal(Boolean(loggedInContentOptions[modal]));
     }
-  }, [modal, isLoggedIn, contentOptions, loggedInContentOptions]);
+  }, [modal, isLoggedIn]);
 
   useEffect(() => {
     if (isValidModal) {
       disableBodyScroll(ref);
     }
-    if (modal && isValidModal === false) {
-      router.push("/");
+
+    if (!modal && isValidModal === false) {
       enableBodyScroll(ref);
+      router.push("/");
     }
-  }, [isValidModal, router]);
+  }, [isValidModal]);
 
   const handleClick = () => {
-    setIsValidModal(false);
     enableBodyScroll(ref);
+    setIsValidModal(false);
   };
 
   return (

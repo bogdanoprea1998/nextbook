@@ -2,7 +2,7 @@ import { getFeed } from "@/app/_actions/postActions";
 import { getUsername } from "@/app/_actions/userActions";
 import { auth } from "@/config/auth";
 
-import PostCard from "./postCard";
+import PostList from "./postList";
 
 export default async function Feed() {
   const session = await auth();
@@ -16,19 +16,5 @@ export default async function Feed() {
     feedArr = await getFeed(username);
   }
 
-  return (
-    userEmail && (
-      <div className="flex flex-col gap-5">
-        {feedArr.length > 0 &&
-          feedArr.map((post: any, index: number) => (
-            <PostCard
-              key={index}
-              username={post.username}
-              description={post.description}
-              image={post.image}
-            />
-          ))}
-      </div>
-    )
-  );
+  return userEmail && <PostList postArr={feedArr} />;
 }
