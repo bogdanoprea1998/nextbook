@@ -4,9 +4,12 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { sendPost } from "@/app/_actions/postActions";
 import { getUsername } from "@/app/_actions/userActions";
+import { storage } from "@/config/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export default function PostInput() {
   const [description, setDescription] = useState<string>("");
+  const [imageUpload, setImageUpload] = useState<any>(null);
   const [username, setUsername] = useState<string | null>(null);
   const session = useSession();
   const userEmail = session.data?.user?.email;
@@ -17,6 +20,23 @@ export default function PostInput() {
     }
   }, [session]);
 
+  const uploadImage = () => {
+    if (imageUpload == null || !username) return;
+    const imageUrl = `images/${imageUpload.name + Math.random()}`;
+    const imageRef = ref(storage, imageUrl);
+
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        sendPost(username, description, url);
+      });
+    });
+  };
+
+  const resetForm = () => {
+    setDescription("");
+    setImageUpload(null);
+  };
+
   const handleChange = (e: any) => {
     setDescription(e.target.value);
   };
@@ -26,14 +46,20 @@ export default function PostInput() {
     setUsername(newUsername);
   };
 
-  const handleClick = async () => {
-    if (username) {
-      await sendPost(username, description, "https://placehold.jp/350x350.png");
-    }
+  const handleClick = (e: any) => {
+    e.preventDefault();
+    uploadImage();
+    resetForm();
   };
 
   return (
-    <form className="flex flex-col gap-2 text-black w-full p-5">
+    <form className="flex flex-col gap-2 py-5 text-black w-full max-w-[350px]">
+      <input
+        type="file"
+        onChange={(event: any) => {
+          setImageUpload(event.target.files[0]);
+        }}
+      />
       <textarea
         onChange={handleChange}
         className="w-full min-h-24 rounded-md p-2 outline-none"
