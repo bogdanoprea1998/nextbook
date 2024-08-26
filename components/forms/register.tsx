@@ -3,14 +3,20 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { storage } from "@/config/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import Input from "../input";
 
 export default function Register() {
   const [message, setMessage] = useState<string>("");
+  const [imageUpload, setImageUpload] = useState<any>(null);
+  const [imagePreview, setImagePreview] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const registerUser = async (formData: any) => {
+    console.log(formData);
     const formDataArr = [...formData];
     const username = formDataArr[0][1];
     const email = formDataArr[1][1];
@@ -53,7 +59,23 @@ export default function Register() {
         <Input name="Email" type="email" />
         <Input name="Password" type="password" />
         <Input name="Confirm password" type="password" />
-        <Input name="Profile Icon" type="file" />
+        <label className="border flex flex-col rounded-md px-5 py-2">
+          <input
+            type="file"
+            onChange={(event: any) => {
+              const file = event.target.files[0];
+              if (file) {
+                setImageUpload(file);
+                setImagePreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+          {imageUpload && (
+            <div className="rounded-full h-50 w-50">
+              <img src={imagePreview} />
+            </div>
+          )}
+        </label>
       </div>
       <h3>{message}</h3>
       <button className="py-2 mx-auto min-w-52 rounded-lg bg-black text-white">

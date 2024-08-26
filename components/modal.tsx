@@ -10,6 +10,7 @@ import { useState, useRef, useEffect } from "react";
 import Login from "./forms/login";
 import Register from "./forms/register";
 import RegisterSuccess from "./register-success";
+import NewPost from "./forms/newPost";
 
 export default function Modal() {
   const [isValidModal, setIsValidModal] = useState<Boolean>();
@@ -24,11 +25,10 @@ export default function Modal() {
     login: <Login />,
     register: <Register />,
     "register-success": <RegisterSuccess />,
-    test: <div>test loggedIn Only</div>,
   };
 
   const loggedInContentOptions: any = {
-    test: <div>test loggedIn Only</div>,
+    "new-post": <NewPost />,
   };
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function Modal() {
     if (isLoggedIn) {
       setIsValidModal(Boolean(loggedInContentOptions[modal]));
     }
-  }, [modal, isLoggedIn]);
+  }, [modal, isLoggedIn, searchParams]);
 
   useEffect(() => {
     if (isValidModal) {
@@ -57,18 +57,19 @@ export default function Modal() {
   return (
     isValidModal && (
       <div
-        ref={ref}
         id="modal"
         className="fixed overscroll-contain top-0 z-50 min-w-full min-h-full content-center bg-zinc-900/70 text-black "
       >
         <div
           id="modal_container"
-          className="flex flex-col m-5 bg-white p-5  rounded-xl md:mx-auto md:max-w-[32rem]"
+          className="flex flex-col m-5 bg-white p-5 rounded-xl md:max-w-[32rem]"
         >
           <Link onClick={handleClick} className="self-end" href={pathname}>
             <XCircleIcon className="w-8 text-black" />
           </Link>
-          <div id="modal_content">{contentOptions[modal]}</div>
+          <div ref={ref} className="overflow-scroll" id="modal_content">
+            {isLoggedIn ? loggedInContentOptions[modal] : contentOptions[modal]}
+          </div>
         </div>
       </div>
     )

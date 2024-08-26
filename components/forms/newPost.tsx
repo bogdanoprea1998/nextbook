@@ -2,15 +2,17 @@
 
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { sendPost } from "@/app/_actions/postActions";
-import { getUsername } from "@/app/_actions/userActions";
 import { storage } from "@/config/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { sendPost } from "@/app/_actions/postActions";
+import { getUsername } from "@/app/_actions/userActions";
 
-export default function PostInput() {
+export default function NewPost() {
   const [description, setDescription] = useState<string>("");
   const [imageUpload, setImageUpload] = useState<any>(null);
+  const [imagePreview, setImagePreview] = useState<any>(null);
   const [username, setUsername] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const session = useSession();
   const userEmail = session.data?.user?.email;
 
@@ -21,19 +23,23 @@ export default function PostInput() {
   }, [session, userEmail]);
 
   const uploadImage = () => {
+    setIsLoading(true);
     if (imageUpload == null || !username) return;
     const imageUrl = `images/${imageUpload.name + Math.random()}`;
     const imageRef = ref(storage, imageUrl);
 
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        sendPost(username, description, url);
-      });
+      getDownloadURL(snapshot.ref)
+        .then((url) => {
+          sendPost(username, description, url);
+        })
+        .finally(() => setIsLoading(false));
     });
   };
 
   const resetForm = () => {
     setDescription("");
+    setImagePreview(null);
     setImageUpload(null);
   };
 
@@ -52,14 +58,24 @@ export default function PostInput() {
     resetForm();
   };
 
-  return (
+  return isLoading ? (
+    <div>Uploading...</div>
+  ) : (
     <form className="flex flex-col gap-2 py-5 text-black w-full max-w-[350px]">
-      <input
-        type="file"
-        onChange={(event: any) => {
-          setImageUpload(event.target.files[0]);
-        }}
-      />
+      <label className="border flex flex-col rounded-md px-5 py-2">
+        <input
+          type="file"
+          onChange={(event: any) => {
+            const file = event.target.files[0];
+            if (file) {
+              setImageUpload(file);
+              setImagePreview(URL.createObjectURL(file));
+            }
+          }}
+        />
+        {imageUpload && <img src={imagePreview} />}
+      </label>
+
       <textarea
         onChange={handleChange}
         className="w-full min-h-24 rounded-md p-2 outline-none"
